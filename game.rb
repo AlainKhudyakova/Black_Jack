@@ -20,4 +20,25 @@ class Game
     end
     deck
   end
+
+  def start_game
+    2.times do
+      player.add_card(deck.pop)
+      dealer.add_card(deck.pop)
+    end
+
+    player.place_bet(10)
+    dealer.place_bet(10)
+
+    puts "#{player.name}'s cards: #{player.hand.map {|c|"#{c.rank}#{c.suit}"}} (Total: #{player.total_points})"
+    puts "Dealer's cards: <strong></strong> (Total: ???)"
+
+    #Ход игрока
+    if player.hand.length == 2
+      player.add_card(deck.pop) #Игрок берет одну карту
+    end
+
+    
+  end
+
 end
