@@ -1,6 +1,8 @@
-require_relative 'card'
+require_relative 'participant'
 require_relative 'dealer'
 require_relative 'player'
+require_relative 'card'
+
 
 class Game
   attr_accessor :player, :dealer, :deck, :pot
