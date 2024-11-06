@@ -29,12 +29,12 @@ class Participant
   def total_points
     total = 0
     ace_count = 0
-    
+
     @hand.each do |card|
       total += card.value
       ace_count += 1 if card.rank == 'A'
     end
-  
+
     # Если сумма больше 21 и есть тузы, уменьшаем их значение
     while total > 21 && ace_count > 0
       total -= 10

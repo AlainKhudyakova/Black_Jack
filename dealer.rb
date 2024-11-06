@@ -1,6 +1,6 @@
 class Dealer < Participant
   def initialize
-    super("Dealer")
+    super('Dealer')
   end
 
   def should_hit?

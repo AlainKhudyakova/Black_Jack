@@ -2,14 +2,16 @@ require_relative 'participant'
 require_relative 'player'
 require_relative 'dealer'
 require_relative 'deck'
+require_relative 'bank'
 
 class Round
-  attr_accessor :player, :dealer, :deck
+  attr_accessor :player, :dealer, :deck, :bank, :game_bank
 
   def initialize(player_name)
     @player = Player.new(player_name)
     @dealer = Dealer.new
     @deck = Deck.new
+    @game_bank = Bank.new
   end
 
   def play
@@ -20,7 +22,12 @@ class Round
   end
 
   def start_game
-    puts "Start a new round!"
+    puts 'Start a new round!'
+
+    if @game_bank.player_balance < 10 || @game_bank.dealer_balance < 10
+      puts 'Not enough funds to make a bet!'
+      return
+    end
 
     2.times do
       player.add_card(deck.deal_card)
@@ -30,14 +37,13 @@ class Round
     puts "#{@player.name} hand: #{@player.hand.map(&:to_s).join(', ')} - Total points: #{@player.total_points}"
     puts "#{@dealer.name} hand: ☆, ☆"
 
-    player.place_bet(10)
-    dealer.place_bet(10)
+    @game_bank.place_auto_bet
   end
 
   def player_turn
     puts "It's your turn!"
     loop do
-      puts "Choose an action: (1) Skip the move, (2) Add a card, (3) Open cards"
+      puts 'Choose an action: (1) Skip the move, (2) Add a card, (3) Open cards'
       choice = gets.chomp.to_i
 
       case choice
@@ -53,10 +59,10 @@ class Round
           puts "You can't draw more than 3 cards"
         end
       when 3
-        puts "Opening cards "
+        puts 'Opening cards '
         break
       else
-        puts "Invalid option!"
+        puts 'Invalid option!'
       end
     end
   end
@@ -80,16 +86,26 @@ class Round
     puts "#{@player.name}'s total points: #{player_total}"
     puts "#{@dealer.name}'s total points: #{dealer_total}"
 
+    # Проверка на превышение 21
     if player_total > 21
       puts "#{@player.name} busts! Dealer wins!"
+      @game_bank.add_dealer_funds(10)
     elsif dealer_total > 21
       puts "Dealer busts! #{@player.name} wins!"
+      @game_bank.add_player_funds(10)
     elsif player_total > dealer_total
+      # Определение победителя
       puts "#{@player.name} wins!"
+      @game_bank.add_player_funds(10)
     elsif dealer_total > player_total
-      puts "Dealer wins!"
+      puts 'Dealer wins!'
+      @game_bank.add_dealer_funds(10)
     else
       puts "It's a draw!"
+      @game_bank.player_balance += 5
+      @game_bank.player_balance += 5
     end
+
+    @game_bank.display_balances
   end
 end
