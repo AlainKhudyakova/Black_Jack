@@ -11,30 +11,40 @@ class Participant
     @hand << card
   end
 
+  def clear_hand
+    @hand.clear
+  end
+
   def place_bet(amount)
     if amount <= @bank
       @bank -= amount
+      puts "#{@name} placed a bet of #{amount}. Remaining bank: #{@bank}."
+      true
     else
       puts 'Not enough money to bet.'
-      nil
+      false
     end
   end
 
   def total_points
     total = 0
     ace_count = 0
-
+    
     @hand.each do |card|
-      if card.rank == 'A'
-        ace_count += 1
-        total += 1
-      else
-        total += card.value
-      end
+      total += card.value
+      ace_count += 1 if card.rank == 'A'
     end
-    ace_count.times do
-      total += 10 if total + 10 <= 21
+  
+    # Если сумма больше 21 и есть тузы, уменьшаем их значение
+    while total > 21 && ace_count > 0
+      total -= 10
+      ace_count -= 1
     end
+
     total
+  end
+
+  def show_bank
+    puts "#{name}'s current bank: #{@bank}"
   end
 end

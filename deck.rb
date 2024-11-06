@@ -23,8 +23,4 @@ class Deck
     end
     @cards.pop
   end
-
-  #def cards_remaining
-  #  @cards.size
-  #end
 end
