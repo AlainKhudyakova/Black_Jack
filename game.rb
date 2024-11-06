@@ -14,18 +14,18 @@ class Game
     @pot = 20 # Ставки по 10 от игрока и дилера
   end
 
-  def create_deck
-    ranks = %w[2 3 4 5 6 7 8 9 10 J Q K A]
-    suits = ['К+', 'К<3', 'К^', 'К<>']
-    deck = []
+  #def create_deck
+  #  ranks = %w[2 3 4 5 6 7 8 9 10 J Q K A]
+  #  suits = ['К+', 'К<3', 'К^', 'К<>']
+  #  deck = []
 
-    suits.each do |suit|
-      ranks.each do |rank|
-        deck << Card.new(rank, suit)
-      end
-    end
-    deck
-  end
+  #  suits.each do |suit|
+  #    ranks.each do |rank|
+  #      deck << Card.new(rank, suit)
+  #    end
+  #  end
+  #  deck
+  #end
 
   def start_game
     2.times do
