@@ -1,10 +1,12 @@
 require_relative 'round'
+require_relative 'bank'
 
 class Game
-  attr_accessor :round
+  attr_accessor :round, :bank
 
   def initialize(player_name)
-    @round = Round.new(player_name)
+    @bank = Bank.new
+    @round = Round.new(player_name, @bank)
   end
 
   def start
@@ -14,7 +16,7 @@ class Game
       answer = gets.chomp.downcase
       break if answer != 'yes'
 
-      @round = Round.new(@round.player.name)
+      @round = Round.new(@round.player.name, @bank)
     end
   end
 end

@@ -5,26 +5,28 @@ require_relative 'deck'
 require_relative 'bank'
 
 class Round
-  attr_accessor :player, :dealer, :deck, :bank, :game_bank
+  attr_accessor :player, :dealer, :deck, :game_bank
 
-  def initialize(player_name)
+  def initialize(player_name, game_bank)
     @player = Player.new(player_name)
     @dealer = Dealer.new
     @deck = Deck.new
-    @game_bank = Bank.new
+    @game_bank = game_bank
+    @bet_amount = 10
   end
 
   def play
     start_game
-    player_turn
+    player_turn unless game_over?
     dealer_turn unless game_over?
     determine_winner
+    @game_bank.display_balances
   end
 
   def start_game
     puts 'Start a new round!'
 
-    if @game_bank.player_balance < 10 || @game_bank.dealer_balance < 10
+    if @game_bank.player_balance < @bet_amount || @game_bank.dealer_balance < @bet_amount
       puts 'Not enough funds to make a bet!'
       return
     end
@@ -37,7 +39,7 @@ class Round
     puts "#{@player.name} hand: #{@player.hand.map(&:to_s).join(', ')} - Total points: #{@player.total_points}"
     puts "#{@dealer.name} hand: ☆, ☆"
 
-    @game_bank.place_auto_bet
+    @game_bank.place_auto_bet(@bet_amount)
   end
 
   def player_turn
@@ -76,7 +78,7 @@ class Round
   end
 
   def game_over?
-    @player.hand.size >= 3 || @dealer.total_points >= 21
+    @player.hand.size >= 3 || @dealer.total_points >= 21 || @player.total_points >= 21
   end
 
   def determine_winner
@@ -89,23 +91,38 @@ class Round
     # Проверка на превышение 21
     if player_total > 21
       puts "#{@player.name} busts! Dealer wins!"
-      @game_bank.add_dealer_funds(10)
+      puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
+      @game_bank.add_dealer_funds(20)  
+      @game_bank.deduct_player_funds(@game_bank.dealer_balance)
+
+      puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     elsif dealer_total > 21
       puts "Dealer busts! #{@player.name} wins!"
-      @game_bank.add_player_funds(10)
+      puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
+      @game_bank.add_player_funds(20)  
+      @game_bank.deduct_dealer_funds(@game_bank.player_balance) 
+
+      puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     elsif player_total > dealer_total
-      # Определение победителя
       puts "#{@player.name} wins!"
-      @game_bank.add_player_funds(10)
+      puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
+      @game_bank.add_player_funds(20) 
+      @game_bank.deduct_dealer_funds(@game_bank.player_balance)  
+
+      puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     elsif dealer_total > player_total
       puts 'Dealer wins!'
-      @game_bank.add_dealer_funds(10)
+      puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
+      @game_bank.add_dealer_funds(20)  
+      @game_bank.deduct_player_funds(@game_bank.player_balance) 
+
+      puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     else
       puts "It's a draw!"
-      @game_bank.player_balance += 5
-      @game_bank.player_balance += 5
+      puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
+      @game_bank.add_player_funds(@bet_amount / 2) 
+      @game_bank.add_dealer_funds(@bet_amount / 2)
+      puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     end
-
-    @game_bank.display_balances
   end
 end

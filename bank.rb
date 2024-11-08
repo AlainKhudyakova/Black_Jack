@@ -27,8 +27,7 @@ class Bank
     puts "Current balances: Player - #{@player_balance}, Dealer - #{@dealer_balance}"
   end
 
-  def place_auto_bet
-    bet_amount = 10
+  def place_auto_bet(bet_amount)
     if @player_balance >= bet_amount && @dealer_balance >= bet_amount
       deduct_player_funds(bet_amount)
       deduct_dealer_funds(bet_amount)
@@ -36,11 +35,5 @@ class Bank
     else
       puts 'Not enough funds to place bets!'
     end
-  end
-
-  # Сброс балансов на начало нового раунда
-  def reset_balances
-    @player_balance = 100
-    @dealer_balance = 100
   end
 end
