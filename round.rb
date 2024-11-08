@@ -92,29 +92,25 @@ class Round
     if player_total > 21
       puts "#{@player.name} busts! Dealer wins!"
       puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
-      @game_bank.add_dealer_funds(20)  
-      @game_bank.deduct_player_funds(@game_bank.dealer_balance)
+      @game_bank.add_dealer_funds(@bet_amount)  
 
       puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     elsif dealer_total > 21
       puts "Dealer busts! #{@player.name} wins!"
       puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
-      @game_bank.add_player_funds(20)  
-      @game_bank.deduct_dealer_funds(@game_bank.player_balance) 
+      @game_bank.add_player_funds(@bet_amount)   
 
       puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     elsif player_total > dealer_total
       puts "#{@player.name} wins!"
       puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
-      @game_bank.add_player_funds(20) 
-      @game_bank.deduct_dealer_funds(@game_bank.player_balance)  
+      @game_bank.add_player_funds(@bet_amount * 2)  
 
       puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     elsif dealer_total > player_total
       puts 'Dealer wins!'
       puts "Before: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
-      @game_bank.add_dealer_funds(20)  
-      @game_bank.deduct_player_funds(@game_bank.player_balance) 
+      @game_bank.add_dealer_funds(@bet_amount * 2)  
 
       puts "After: Player balance: #{@game_bank.player_balance}, Dealer balance: #{@game_bank.dealer_balance}"
     else
